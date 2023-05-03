@@ -1,36 +1,27 @@
 class UsersController < ApplicationController
+  before_action :set_user, only: [:show, :edit, :update, :destroy]
+
+  # POST /users
+  # POST /users.json
   def create
-    if User.where.not(email: nil).where.not(email: '').where(email: user_params[:email]).exists?
-      render json: { success: false, message: 'Email đã được sử dụng bởi người dùng khác!' }
-    elsif User.exists?(username: user_params[:username])
-      render json: { success: false, message: 'Tên đăng nhập đã được sử dụng bởi người dùng khác!' }
+    @user = User.new(user_params)
+
+    if @user.save
+      render json: { message: 'User was successfully created.' }, status: :created
     else
-      user = User.new(user_params)
-      if user.save
-        session[:user_id] = user.id
-
-
-        render json: { success: true, message: 'Đăng ký tài khoản thành công!' }
-      else
-        render json: { success: false, message: 'Đăng ký tài khoản thất bại!' }
-      end
+      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
 
   private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_user
+      @user = User.find(params[:id])
+    end
 
-  def user_params
-    params.require(:user).permit(:username, :email, :password, :password_confirmation)
-  end
-
-  def email_exists?
-    User.where.not(username: nil).exists?(email: user_params[:email])
-  end
-
-  def email_exists?
-    User.where.not(email: ['', nil]).where(email: user_params[:email]).exists?
-  end
-
-
+    # Only allow a list of trusted parameters through.
+    def user_params
+      params.require(:user).permit(:email, :password, :password_confirmation, :username)
+    end
 end

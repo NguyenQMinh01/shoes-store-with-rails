@@ -22,5 +22,5 @@ Rails.application.routes.draw do
   delete 'logout' => 'sessions#destroy'
 
   resources :products, only: [:index]
-  post 'user' => 'users#create'
+  post '/users', to: 'users#create'
 end
