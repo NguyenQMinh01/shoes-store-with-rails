@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
 
-  root "pages#index"
+  root "products#index"
   get "/products", to: "products#index"
 
   post "/orders", to: "orders#create"
@@ -22,7 +22,5 @@ Rails.application.routes.draw do
   delete 'logout' => 'sessions#destroy'
 
   resources :products, only: [:index]
-
-  get "*path", to: "pages#index", via: :all
-
+  post 'user' => 'users#create'
 end
